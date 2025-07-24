@@ -1,0 +1,22 @@
+{
+  "name": "exam-search-app",
+  "version": "1.0.0",
+  "description": "## Overview The Exam Search App is a web application designed to allow users to upload images of exam papers and search for them using relevant metadata. The application extracts key information from the uploaded images to facilitate easy searching and organization of exam materials.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx serve public"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "serve": "^14.2.4",
+    "tailwindcss": "^4.1.11"
+  },
+  "dependencies": {
+    "firebase": "^12.0.0"
+  }
+}
