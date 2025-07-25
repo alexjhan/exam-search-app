@@ -1,35 +1,22 @@
 {
   "name": "exam-search-app",
   "version": "1.0.0",
-  "description": "## Overview The Exam Search App is a web application designed to allow users to upload images of exam papers and search for them using relevant metadata. The application extracts key information from the uploaded images to facilitate easy searching and organization of exam materials.",
+  "description": "Aplicación para buscar exámenes",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && npx serve public",
-    "build": "node node_modules/tailwindcss/lib/cli.js -i ./public/styles/main.css -o ./public/styles/output.css",
-    "deploy": "npm run build && firebase deploy --only hosting"
+    "build:css": "tailwindcss -i ./public/styles/main.css -o ./public/styles/output.css",
+    "watch:css": "tailwindcss -i ./public/styles/main.css -o ./public/styles/output.css --watch",
+    "deploy": "npm run build:css && firebase deploy --only hosting",
+    "start": "npm run watch:css"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@tailwindcss/forms": "^0.5.10",
-    "autoprefixer": "^10.4.21",
-    "firebase-tools": "^14.11.1",
-    "postcss": "^8.5.6",
-    "serve": "^14.2.4",
-    "tailwindcss": "^4.1.11"
-  },
   "dependencies": {
-    "firebase": "^12.0.0",
-    "firebase-admin": "^13.4.0"
+    "firebase": "^9.23.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alexjhan/exam-search-app.git"
-  },
-  "bugs": {
-    "url": "https://github.com/alexjhan/exam-search-app/issues"
-  },
-  "homepage": "https://github.com/alexjhan/exam-search-app#readme"
+  "devDependencies": {
+    "tailwindcss": "^3.3.3",
+    "@tailwindcss/forms": "^0.5.4"
+  }
 }
