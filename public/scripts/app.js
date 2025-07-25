@@ -78,10 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const parcial = document.getElementById('exam-number').value;
 
         try {
+            console.log('Iniciando subida del archivo:', selectedFile.name);
             // Subir archivo a Firebase Storage
             const fileRef = storageRef(storage, `examenes/${Date.now()}_${selectedFile.name}`);
+            console.log('Subiendo archivo a Firebase Storage...');
             await uploadBytes(fileRef, selectedFile);
+            console.log('Archivo subido exitosamente, obteniendo URL...');
             const fileURL = await getDownloadURL(fileRef);
+            console.log('URL del archivo:', fileURL);
 
             // Guardar metadata en Firestore
             await addDoc(collection(db, "examenes"), {
