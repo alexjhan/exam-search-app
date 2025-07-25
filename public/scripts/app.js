@@ -12,7 +12,7 @@ const firebaseConfig = {
 // Inicializar Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
@@ -83,11 +83,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
 
-    searchButton.addEventListener('click', () => {
-        const query = searchInput.value.trim();
-        if (query) {
-            console.log('Buscando:', query);
-            // Aquí puedes agregar la lógica real de búsqueda
+    searchButton.addEventListener('click', async () => {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        if (searchTerm) {
+            try {
+                // Crear consulta para buscar en diferentes campos
+                const examenesRef = collection(db, "examenes");
+                const q = query(examenesRef, 
+                    where("curso", ">=", searchTerm),
+                    where("curso", "<=", searchTerm + '\uf8ff')
+                );
+                
+                const snapshot = await getDocs(q);
+                const resultados = [];
+                
+                snapshot.forEach((doc) => {
+                    resultados.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Mostrar resultados
+                mostrarResultados(resultados);
+            } catch (error) {
+                console.error("Error en la búsqueda:", error);
+                alert("Error al realizar la búsqueda");
+            }
         }
     });
     searchInput.addEventListener('keydown', (e) => {
@@ -95,4 +114,37 @@ document.addEventListener('DOMContentLoaded', () => {
             searchButton.click();
         }
     });
+
+    // Función para mostrar los resultados de la búsqueda
+    function mostrarResultados(resultados) {
+        const contenedor = document.createElement('div');
+        contenedor.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8';
+
+        if (resultados.length === 0) {
+            contenedor.innerHTML = '<p class="text-center col-span-full text-gray-500">No se encontraron resultados</p>';
+        } else {
+            resultados.forEach(exam => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow-md p-4';
+                card.innerHTML = `
+                    <img src="${exam.fileURL}" alt="Vista previa del examen" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-semibold mb-2">${exam.curso}</h3>
+                    <p class="text-sm text-gray-600">Profesor: ${exam.docente}</p>
+                    <p class="text-sm text-gray-600">Fecha: ${exam.fecha}</p>
+                    <p class="text-sm text-gray-600">Parcial: ${exam.parcial}</p>
+                    <a href="${exam.fileURL}" target="_blank" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Ver Examen
+                    </a>
+                `;
+                contenedor.appendChild(card);
+            });
+        }
+
+        // Limpiar resultados anteriores y mostrar los nuevos
+        const resultadosAnteriores = document.querySelector('.grid');
+        if (resultadosAnteriores) {
+            resultadosAnteriores.remove();
+        }
+        document.querySelector('.container').appendChild(contenedor);
+    }
 });
