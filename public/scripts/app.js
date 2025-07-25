@@ -32,6 +32,31 @@ document.addEventListener('DOMContentLoaded', () => {
         fileInput.click();
     });
 
+    // Configuración del Drag and Drop
+    const dropZone = document.querySelector('.border-dashed');
+    
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-500');
+        dropZone.classList.add('bg-blue-50');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-blue-500');
+        dropZone.classList.remove('bg-blue-50');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-500');
+        dropZone.classList.remove('bg-blue-50');
+        
+        if (e.dataTransfer.files.length > 0) {
+            selectedFile = e.dataTransfer.files[0];
+            metadataContainer.classList.remove('hidden');
+        }
+    });
+
     // Cuando se selecciona un archivo, mostrar el formulario de metadatos
     fileInput.addEventListener('change', (event) => {
         if (event.target.files.length > 0) {
@@ -47,10 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Por favor selecciona un archivo.');
             return;
         }
-        const fecha = document.getElementById('fecha').value;
-        const docente = document.getElementById('docente').value;
-        const curso = document.getElementById('curso').value;
-        const parcial = document.getElementById('parcial').value;
+        const fecha = document.getElementById('semester').value;
+        const docente = document.getElementById('teacher').value;
+        const curso = document.getElementById('course').value;
+        const parcial = document.getElementById('exam-number').value;
 
         try {
             // Subir archivo a Firebase Storage
